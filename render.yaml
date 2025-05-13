@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: oraculo-cigano-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 3000
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MAX_REQUESTS_PER_MINUTE
+        value: 60
+      - key: REQUEST_DELAY
+        value: 250
+      - key: MAX_TOKENS
+        value: 1000
+      - key: TEMPERATURE
+        value: 0.7
+    healthCheckPath: /api/test
+    autoDeploy: true 
