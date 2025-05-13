@@ -78,7 +78,7 @@ let server = null;
 // Configurações de segurança para produção
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production'
-        ? ['https://seu-usuario.github.io'] // Substitua pelo seu domínio do GitHub Pages
+        ? ['https://joaohpereiraa.github.io'] // Domínio correto do GitHub Pages
         : ['http://localhost:*', 'http://127.0.0.1:*'],
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
