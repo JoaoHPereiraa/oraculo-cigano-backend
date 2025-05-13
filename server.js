@@ -18,7 +18,7 @@ process.on('unhandledRejection', (reason, promise) => {
 const DEFAULT_CONFIG = {
     PORT: 3001,
     GEMINI_API_KEY: 'YOUR_API_KEY_HERE', // Placeholder - será substituído pela variável de ambiente
-    MAX_REQUESTS_PER_MINUTE: 60,
+    MAX_REQUESTS_PER_MINUTE: 1, // Alterado para 1 requisição por minuto
     REQUEST_DELAY: 250,
     MAX_TOKENS: 1024,
     TEMPERATURE: 0.7
@@ -113,14 +113,22 @@ app.use((req, res, next) => {
 
 // Configuração do rate limiting
 const limiter = rateLimit({
-    windowMs: 60 * 1000,
-    max: config.MAX_REQUESTS_PER_MINUTE,
-    message: { error: 'Muitas requisições, tente novamente em um minuto.' },
+    windowMs: 60 * 1000, // 1 minuto
+    max: 1, // 1 requisição por minuto
+    message: {
+        error: 'Por favor, aguarde 1 minuto antes de fazer uma nova leitura.',
+        retryAfter: 60
+    },
     standardHeaders: true,
-    legacyHeaders: false
+    legacyHeaders: false,
+    keyGenerator: (req) => {
+        // Usa o IP do cliente como chave para o rate limiting
+        return req.ip;
+    }
 });
 
-app.use(limiter);
+// Aplicar o rate limiter apenas na rota de interpretação
+app.use('/api/interpretacao', limiter);
 
 // Função para validar os dados de entrada
 function validarDadosEntrada(carta1, carta2, tempo, tema) {
